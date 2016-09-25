@@ -4,7 +4,7 @@
 
 # What is it?       
 
-Each day, [Bing][1] features a beautiful high-quality image on their homepage, this program(i.e. `bingWallpaper`), which is a command line tool that can run on Ubuntu 14.04 LTS, used to download the background picture of [Bing][1] homepage, then set this picture as the desktop wallpaper of Ubuntu 14.04 LTS, so you can run this program every day to keep your desktop wallpaper is same as the picture of [Bing][1] homepage.         
+Each day, [Bing][1] features a beautiful high-quality image on their homepage, this program(i.e. `bingWallpaper`), which is a command line tool that can run on Ubuntu 14.04 LTS, used to set the desktop wallpaper of Ubuntu 14.04 LTS as the background picture of [Bing][1] homepage, so you can run this program every day to keep your desktop wallpaper is same as the picture of [Bing][1] homepage.         
           
 ![bingWallpaper][2]                       
 
