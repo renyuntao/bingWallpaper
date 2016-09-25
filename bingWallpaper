@@ -1,0 +1,170 @@
+#!/bin/bash
+# Date:
+#	2016-09-23         	
+#
+# Function:        
+#	Download the background picture from Bing, and set      
+#	the picture that download from Bing as the desktop
+#	wallpaper of Ubuntu 14.04      
+#
+# Maintainer:        
+#	Yuntao Ren <rytubuntulinux@gmail.com>           
+
+# This function used to show help message 
+show_help()
+{
+	
+	clear
+		
+	# Get the width of tty
+	tty_cols=`tput cols`
+
+	# If $tty_cols >= 80
+	if [ $tty_cols -ge 80 ] 
+	then
+		echo -e "\e[1m================================= HELP ===================================\e[0m"
+	else
+		let remainder=$tty_cols%2
+
+		# $tty_cols is a even number
+		if [ "$remainder" == "0" ]
+		then
+			# Because the length of ' HELP ' is 6, so $tty_cols-6
+			let n=($tty_cols-6)/2
+		# $tty_cols is a odd number
+		else
+			let n=($tty_cols-1-6)/2
+		fi
+
+		echo -en "\e[1m"
+		for i in `seq 1 $n`
+		do
+			echo -n "="
+		done
+
+		echo -n " HELP "
+
+		for i in `seq 1 $n`
+		do
+			echo -n "="
+		done
+		echo -e "\e[0m"
+	fi
+
+	# Name
+	echo -e "\e[1mNAME\e[0m\n   bingWallpaper - Set the desktop wallpaper of Ubuntu 14.04\n"
+
+	# Synopsis
+	echo -e "\e[1mSYNOPSIS\n\e[0m   bingWallpaper [ \e[1m-h\e[0m | \e[1m-r\e[0m | \e[1m-k\e[0m ]\n"
+
+	# Description
+	echo -e "\e[1mDESCRIPTION\e[0m"         
+	echo -e "   Download the background picture of \e[1mBing\e[0m, then set this picture as the"
+	echo -e "   desktop wallpaper of Ubuntu 14.04\n"
+
+	# Options
+	echo -e "\e[1mOptions\e[0m"
+	echo -e "\e[1m   -h\e[0m\n      Show this help\n"
+	echo -e "\e[1m   -r\e[0m\n      Remove the  HTML file that download from \e[1mBing\e[0m after get "
+	echo -e "      the uri of picture from it, This is the default option\n"
+	echo -e "\e[1m   -k\e[0m\n      Keep the HTML file that download from the \e[1mBing\e[0m"
+
+
+	# If $tty_cols >= 80
+	if [ $tty_cols -ge 80 ] 
+	then
+		echo -e "\e[1m==========================================================================\e[0m"
+	else
+		# Because the length of ' HELP ' is 6, so +6
+		let n=n*2+6
+		echo -en "\e[1m"
+		for i in `seq 1 $n`
+		do
+			echo -n "="
+		done
+		echo -e "\e[0m"
+	fi
+}
+
+# if h_option is specified, then show help         
+#
+# if r_option is specified, then the HTML file that download from Bing 
+# will be removed after get the URI of picture from this file    
+#
+# if k_option is specified, then keep the HTML file that download from
+# Bing   
+h_option=0
+r_option=0
+k_option=0
+
+while getopts ":hrk" opt
+do
+	case $opt in
+		h)
+			h_option=1
+			;;
+		r)
+			r_option=1
+			;;
+		k)
+			k_option=1
+			;;
+		\?)
+			echo -e "\e[1m\e[31mError:\e[0m Unrecognized option -$OPTARG"
+			echo -e "Use\n"
+			echo -e "    \e[1m$ bingWallpaper -h\e[0m\n"
+			echo "for more information"
+			exit 1
+			;;
+	esac
+done
+
+# -r option can't used with -k option
+if [ "$r_option" == "1" ] && [ "$k_option" == "1" ]
+then
+	echo -e "\e[1m\e[31mError:\e[0m -r option can't used with -k option"
+	exit 1
+fi
+
+# If only -h option is specified
+if [ "$h_option" == "1" ] && [ "$k_option" == "0" ] && [ "$r_option" == "0" ]
+then
+	show_help
+	exit 0
+fi
+
+# ****************************** CORE *********************************
+
+html_file='bing.html'
+picture_file='bing.jpg'
+bing_url='http://www.bing.com'
+program_dir=bingWallpaper
+
+if [ ! -d ~/bingWallpaper ]
+then
+	mkdir ~/$program_dir
+fi
+
+# Download HTML file from cn.bing.com
+curl -Ls $bing_url > $html_file
+
+# Get the picture url from $html_file
+picture_url=`grep -o 'http[a-zA-Z0-9/_-.]*jpg' $html_file`
+
+# Download the picture     
+curl -s $picture_url > ~/$program_dir/$picture_file    
+
+# Set picture URI      
+picture_uri=/home/`whoami`/$program_dir/$picture_file
+
+# Set the picture as the Desktop Wallpaper     
+gsettings set org.gnome.desktop.background picture-uri file://$picture_uri
+
+# **************************** END CORE *******************************
+
+# if -k option is not specified, then remove the HTML file
+# that download from Bing
+if [ "$k_option" == "0" ]
+then
+	rm -rf $html_file
+fi
