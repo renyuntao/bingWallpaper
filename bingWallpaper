@@ -146,10 +146,10 @@ then
 fi
 
 # Download HTML file from cn.bing.com
-curl -Ls $bing_url > $html_file
+curl -Ls $bing_url > ~/$program_dir/$html_file
 
 # Get the picture url from $html_file
-picture_url=`grep -o 'http[a-zA-Z0-9/_-.]*jpg' $html_file`
+picture_url=`grep -o 'http[a-zA-Z0-9/_-.]*jpg' ~/$program_dir/$html_file`
 
 # Download the picture     
 curl -s $picture_url > ~/$program_dir/$picture_file    
@@ -166,5 +166,5 @@ gsettings set org.gnome.desktop.background picture-uri file://$picture_uri
 # that download from Bing
 if [ "$k_option" == "0" ]
 then
-	rm -rf $html_file
+	rm -rf ~/$program_dir/$html_file
 fi
