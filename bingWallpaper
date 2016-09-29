@@ -10,6 +10,7 @@
 # Maintainer:        
 #	Yuntao Ren <rytubuntulinux@gmail.com>           
 
+
 # This function used to show help message 
 show_help()
 {
@@ -55,7 +56,7 @@ show_help()
 	echo -e "\e[1mNAME\e[0m\n   bingWallpaper - Set the desktop wallpaper of Ubuntu 14.04\n"
 
 	# Synopsis
-	echo -e "\e[1mSYNOPSIS\n\e[0m   bingWallpaper [ \e[1m-h\e[0m | \e[1m-r\e[0m | \e[1m-k\e[0m ]\n"
+	echo -e "\e[1mSYNOPSIS\n\e[0m   bingWallpaper [ \e[1m-h\e[0m | \e[1m-r\e[0m | \e[1m-k\e[0m | \e[1m-v\e[0m ]\n"
 
 	# Description
 	echo -e "\e[1mDESCRIPTION\e[0m"         
@@ -67,7 +68,8 @@ show_help()
 	echo -e "\e[1m   -h\e[0m\n      Show this help\n"
 	echo -e "\e[1m   -r\e[0m\n      Remove the  HTML file that download from \e[1mBing\e[0m after get "
 	echo -e "      the uri of picture from it, This is the default option\n"
-	echo -e "\e[1m   -k\e[0m\n      Keep the HTML file that download from the \e[1mBing\e[0m"
+	echo -e "\e[1m   -k\e[0m\n      Keep the HTML file that download from the \e[1mBing\e[0m\n"
+	echo -e "\e[1m   -v\e[0m\n      Show version information"
 
 
 	# If $tty_cols >= 80
@@ -86,6 +88,12 @@ show_help()
 	fi
 }
 
+# Show version information
+show_version()
+{
+	echo "bingWallpaper v1.2"
+}
+
 # if h_option is specified, then show help         
 #
 # if r_option is specified, then the HTML file that download from Bing 
@@ -96,8 +104,9 @@ show_help()
 h_option=0
 r_option=0
 k_option=0
+v_option=0
 
-while getopts ":hrk" opt
+while getopts ":hrkv" opt
 do
 	case $opt in
 		h)
@@ -108,6 +117,9 @@ do
 			;;
 		k)
 			k_option=1
+			;;
+		v)
+			v_option=1
 			;;
 		\?)
 			echo -e "\e[1m\e[31mError:\e[0m Unrecognized option -$OPTARG"
@@ -130,6 +142,13 @@ fi
 if [ "$h_option" == "1" ] && [ "$k_option" == "0" ] && [ "$r_option" == "0" ]
 then
 	show_help
+	exit 0
+fi
+
+# if -v option is specified          
+if [ "$v_option" == "1" ] 
+then
+	show_version
 	exit 0
 fi
 

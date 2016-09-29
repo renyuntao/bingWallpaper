@@ -20,6 +20,9 @@ Each day, [Bing][1] features a beautiful high-quality image on their homepage, t
 &nbsp;&nbsp;&nbsp;**-k**            
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Keep the HTML file that download from the [Bing][1] homepage
 
+&nbsp;&nbsp;&nbsp;**-v**            
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Show version information
+
 # How to use it?         
 
 ## Install
@@ -34,6 +37,11 @@ $ make
 
 	```bash
 	$ bingWallpaper -h
+	```
+	You can also view the **bingWallpaper**'s man page to get help:     
+
+	```bash
+	$ man bingWallpaper
 	```
 2. Set the background picture of [Bing][1] homepage as the desktop wallpaper of Ubuntu 14.04      
 
