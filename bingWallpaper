@@ -10,7 +10,6 @@
 # Maintainer:        
 #	Yuntao Ren <rytubuntulinux@gmail.com>           
 
-
 # This function used to show help message 
 show_help()
 {
@@ -91,7 +90,7 @@ show_help()
 # Show version information
 show_version()
 {
-	echo "bingWallpaper v1.2"
+	echo "bingWallpaper v1.3"
 }
 
 # if h_option is specified, then show help         
@@ -159,7 +158,7 @@ picture_file='bing.jpg'
 bing_url='http://www.bing.com'
 program_dir=bingWallpaper
 
-if [ ! -d ~/bingWallpaper ]
+if [ ! -d ~/$program_dir ]
 then
 	mkdir ~/$program_dir
 fi
@@ -187,3 +186,5 @@ if [ "$k_option" == "0" ]
 then
 	rm -rf ~/$program_dir/$html_file
 fi
+
+notify-send -i /usr/share/icons/leaf.jpg "bingWallpaper" "Changed Wallpaper Successfully!"

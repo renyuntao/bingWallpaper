@@ -48,6 +48,12 @@ $ make
 	```bash
 	$ bingWallpaper
 	```
+3. You can also search the **bingWallpaper** from Dash:        
+
+   ![Search bingWallpaper from dash][3]             
+
+   then you can run **bingWallpaper** by click the icon of it. 
+
 
 ## Uninstall
 
@@ -56,4 +62,5 @@ $ make uninstall
 ```
 
 [1]: http://www.bing.com       
-[2]: https://c2.staticflickr.com/6/5018/29811077961_f4d2b983b3_b.jpg    
+[2]: https://c2.staticflickr.com/6/5018/29811077961_f4d2b983b3_b.jpg
+[3]: https://c3.staticflickr.com/9/8133/30130859226_735189717a_z.jpg
