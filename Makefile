@@ -1,4 +1,3 @@
-
 install:
 	sudo cp -v bingWallpaper.desktop /usr/share/applications/
 	sudo cp -v leaf.jpg /usr/share/icons/

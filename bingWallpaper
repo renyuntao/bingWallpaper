@@ -10,6 +10,16 @@
 # Maintainer:        
 #	Yuntao Ren <rytubuntulinux@gmail.com>           
 
+
+# Check if the network is available
+ping -c 1 www.bing.com &> /dev/null
+# Network is not available
+if [ "$?" != "0" ]
+then
+	notify-send -i /usr/share/icons/leaf.jpg "Warning!" "Network is not available"
+	exit 1
+fi
+ 
 # This function used to show help message 
 show_help()
 {
@@ -90,7 +100,7 @@ show_help()
 # Show version information
 show_version()
 {
-	echo "bingWallpaper v1.3"
+	echo "bingWallpaper v1.4"
 }
 
 # if h_option is specified, then show help         
@@ -187,4 +197,4 @@ then
 	rm -rf ~/$program_dir/$html_file
 fi
 
-notify-send -i /usr/share/icons/leaf.jpg "bingWallpaper" "Changed Wallpaper Successfully!"
+notify-send -i /usr/share/icons/leaf.jpg "Congratulations!" "Changed Wallpaper Successfully!"
