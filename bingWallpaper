@@ -166,7 +166,11 @@ fi
 html_file='bing.html'
 picture_file='bing.jpg'
 bing_url='http://www.bing.com'
+bing_pic_url_file='bing_pic_url'
+bing_pic_url_file_tmp='bing_pic_url_tmp'
+bing_pic_size_threshold=150
 program_dir=bingWallpaper
+tmp_pic_file=tmp.jpg
 
 if [ ! -d ~/$program_dir ]
 then
@@ -177,10 +181,28 @@ fi
 curl -Ls $bing_url > ~/$program_dir/$html_file
 
 # Get the picture url from $html_file
-picture_url=`grep -o 'http[a-zA-Z0-9/_-.]*jpg' ~/$program_dir/$html_file`
+grep -o 'http[a-zA-Z0-9/_-.]*jpg' ~/$program_dir/$html_file > ~/$program_dir/$bing_pic_url_file
+if grep -q 'bing' ~/$program_dir/$bing_pic_url_file
+then
+	grep 'bing' ~/$program_dir/$bing_pic_url_file > ~/$program_dir/$bing_pic_url_file_tmp
+	mv ~/$program_dir/$bing_pic_url_file_tmp ~/$program_dir/$bing_pic_url_file
+fi
 
-# Download the picture     
-curl -s $picture_url > ~/$program_dir/$picture_file    
+for picture_url in `cat ~/$program_dir/$bing_pic_url_file`
+do
+	# Download the picture     
+	curl --connect-timeout 2 -s $picture_url > ~/$program_dir/$tmp_pic_file
+
+	file_size=`du -k ~/$program_dir/$tmp_pic_file | awk '{print $1}'`
+	if [ "$file_size" -lt "$bing_pic_size_threshold" ]
+	then
+		echo "file_size: $file_size    threshold: $bing_pic_size_threshold"
+		continue
+	else
+		mv ~/$program_dir/$tmp_pic_file ~/$program_dir/$picture_file
+		break
+	fi
+done
 
 # Set picture URI      
 picture_uri=/home/`whoami`/$program_dir/$picture_file
