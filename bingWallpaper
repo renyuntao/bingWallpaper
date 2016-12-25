@@ -170,7 +170,7 @@ bing_pic_url_file='bing_pic_url'
 bing_pic_url_file_tmp='bing_pic_url_tmp'
 bing_pic_size_threshold=150
 program_dir=bingWallpaper
-tmp_pic_file=tmp.jpg
+tmp_pic_file=bing_tim.jpg
 
 if [ ! -d ~/$program_dir ]
 then
@@ -180,16 +180,16 @@ fi
 # Download HTML file from cn.bing.com
 curl -Ls $bing_url > ~/$program_dir/$html_file
 
-# Get the picture url from $html_file
-grep -o 'http[a-zA-Z0-9/_-.]*jpg' ~/$program_dir/$html_file > ~/$program_dir/$bing_pic_url_file
-if grep -q 'bing' ~/$program_dir/$bing_pic_url_file
-then
-	grep 'bing' ~/$program_dir/$bing_pic_url_file > ~/$program_dir/$bing_pic_url_file_tmp
-	mv ~/$program_dir/$bing_pic_url_file_tmp ~/$program_dir/$bing_pic_url_file
-fi
 
-for picture_url in `cat ~/$program_dir/$bing_pic_url_file`
+# Get the picture url from $html_file
+pic_url_prefix='http://s.cn.bing.net'
+grep -P -o '(?<=")/az.*jpg(?=")' ~/$program_dir/$html_file > ~/$program_dir/$bing_pic_url_file
+
+get_pic_success=0
+for path in `cat ~/$program_dir/$bing_pic_url_file`
 do
+	picture_url=${pic_url_prefix}${path}
+
 	# Download the picture     
 	curl --connect-timeout 2 -s $picture_url > ~/$program_dir/$tmp_pic_file
 
@@ -200,9 +200,16 @@ do
 		continue
 	else
 		mv ~/$program_dir/$tmp_pic_file ~/$program_dir/$picture_file
+		get_pic_success=1
 		break
 	fi
 done
+
+
+if [ "$get_pic_success" == "0" ]
+then
+	echo "Some error happen, please report this error to <rytubuntulinux@gmail.com>"
+fi
 
 # Set picture URI      
 picture_uri=/home/`whoami`/$program_dir/$picture_file
@@ -216,7 +223,9 @@ gsettings set org.gnome.desktop.background picture-uri file://$picture_uri
 # that download from Bing
 if [ "$k_option" == "0" ]
 then
-	rm -rf ~/$program_dir/$html_file
+	rm -rf ~/$program_dir/$html_file 
 fi
+
+rm -rf ~/$program_dir/$bing_pic_url_file
 
 notify-send -i /usr/share/icons/leaf.jpg "Congratulations!" "Changed Wallpaper Successfully!"
