@@ -1,5 +1,5 @@
 [Desktop Entry]             
-Version=1.6    
+Version=1.7    
 Name=bingWallpaper     
 Comment=Set the desktop wallpaper of Ubuntu 14.04        
 Exec=/usr/bin/bingWallpaper

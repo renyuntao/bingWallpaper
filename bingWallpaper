@@ -12,7 +12,7 @@
 
 
 # Check if the network is available
-ping -c 1 www.bing.com &> /dev/null
+ping -c 1 www.baidu.com &> /dev/null
 # Network is not available
 if [ "$?" != "0" ]
 then
@@ -165,7 +165,7 @@ fi
 
 html_file='bing.html'
 picture_file='bing.jpg'
-bing_url='http://www.bing.com'
+bing_url='http://cn.bing.com/?mkt=zh-CN'
 bing_pic_url_file='bing_pic_url'
 bing_pic_url_file_tmp='bing_pic_url_tmp'
 bing_pic_size_threshold=150
