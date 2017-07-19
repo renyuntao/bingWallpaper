@@ -168,7 +168,7 @@ picture_file='bing.jpg'
 bing_url='http://cn.bing.com/?mkt=zh-CN'
 bing_pic_url_file='bing_pic_url'
 bing_pic_url_file_tmp='bing_pic_url_tmp'
-bing_pic_size_threshold=150
+bing_pic_size_threshold=110
 program_dir=bingWallpaper
 tmp_pic_file=bing_tim.jpg
 
