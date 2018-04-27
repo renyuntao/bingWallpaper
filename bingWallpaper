@@ -182,7 +182,7 @@ curl -Ls $bing_url > ~/$program_dir/$html_file
 
 
 # Get the picture url from $html_file
-pic_url_prefix='http://s.cn.bing.net'
+pic_url_prefix='http://www.bing.com'
 grep -P -o '(?<=")/az.*jpg(?=")' ~/$program_dir/$html_file > ~/$program_dir/$bing_pic_url_file
 
 get_pic_success=0
