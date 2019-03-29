@@ -165,7 +165,7 @@ fi
 
 html_file='bing.html'
 picture_file='bing.jpg'
-bing_url='http://cn.bing.com/?mkt=zh-CN'
+bing_url='https://cn.bing.com/'
 bing_pic_url_file='bing_pic_url'
 bing_pic_url_file_tmp='bing_pic_url_tmp'
 bing_pic_size_threshold=110
@@ -182,8 +182,8 @@ curl -Ls $bing_url > ~/$program_dir/$html_file
 
 
 # Get the picture url from $html_file
-pic_url_prefix='http://s.cn.bing.net'
-grep -P -o '(?<=")/az.*jpg(?=")' ~/$program_dir/$html_file > ~/$program_dir/$bing_pic_url_file
+pic_url_prefix="$bing_url"
+grep -P -o '(?<=")/th\?id=.*?1920x1080.jpg(?=&)' ~/$program_dir/$html_file > ~/$program_dir/$bing_pic_url_file
 
 get_pic_success=0
 for path in `cat ~/$program_dir/$bing_pic_url_file`
