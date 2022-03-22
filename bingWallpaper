@@ -182,8 +182,8 @@ curl -Ls $bing_url > ~/$program_dir/$html_file
 
 
 # Get the picture url from $html_file
-pic_url_prefix="$bing_url"
-grep -P -o '(?<=")/th\?id=.*?1920x1080.jpg(?=&)' ~/$program_dir/$html_file > ~/$program_dir/$bing_pic_url_file
+pic_url_prefix="https://s.cn.bing.net"
+grep -P -o '(?<=https://s.cn.bing.net)/th\?id=.*?1920x1080.jpg(?=&)' ~/$program_dir/$html_file > ~/$program_dir/$bing_pic_url_file
 
 get_pic_success=0
 for path in `cat ~/$program_dir/$bing_pic_url_file`
