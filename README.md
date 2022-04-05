@@ -64,3 +64,8 @@ $ make uninstall
 [1]: http://www.bing.com       
 [2]: https://c2.staticflickr.com/6/5018/29811077961_f4d2b983b3_b.jpg
 [3]: https://c3.staticflickr.com/9/8133/30130859226_735189717a_z.jpg
+
+## My WeChat Public Account
+
+![qrcode_for_gh_e9fa153335d8_430](https://user-images.githubusercontent.com/11660067/161665437-096c81d4-f2d3-481e-a0c1-06683be8d93e.jpg)
+
