@@ -9,6 +9,11 @@
 #
 # Maintainer:        
 #	Yuntao Ren <rytubuntulinux@gmail.com>           
+#
+# History:
+#   - 2022-09-08 (v2.0)
+#     Use bing api to get picture url
+#     Refer: https://stackoverflow.com/questions/10639914/is-there-a-way-to-get-bings-photo-of-the-day
 
 
 # Check if the network is available
@@ -100,7 +105,7 @@ show_help()
 # Show version information
 show_version()
 {
-	echo "bingWallpaper v1.4"
+	echo "bingWallpaper v2.0"
 }
 
 # if h_option is specified, then show help         
@@ -165,12 +170,8 @@ fi
 
 html_file='bing.html'
 picture_file='bing.jpg'
-bing_url='https://cn.bing.com/'
-bing_pic_url_file='bing_pic_url'
-bing_pic_url_file_tmp='bing_pic_url_tmp'
-bing_pic_size_threshold=110
+bing_url='https://cn.bing.com'
 program_dir=bingWallpaper
-tmp_pic_file=bing_tim.jpg
 
 if [ ! -d ~/$program_dir ]
 then
@@ -180,33 +181,15 @@ fi
 # Download HTML file from cn.bing.com
 curl -Ls $bing_url > ~/$program_dir/$html_file
 
+# Get the picture url
+api_url="$bing_url/HPImageArchive.aspx?format=xml&idx=0&n=1&mkt=en-US"
+pic_path=$(curl -s "$api_url" | grep -oP '<url>.*</url>' | sed -e 's@<url>@@' -e 's@</url>@@' -e 's@amp;@@g')
+pic_url="${bing_url}${pic_path}"
 
-# Get the picture url from $html_file
-pic_url_prefix="https://s.cn.bing.net"
-grep -P -o '(?<=https://s.cn.bing.net)/th\?id=.*?1920x1080.jpg(?=&)' ~/$program_dir/$html_file > ~/$program_dir/$bing_pic_url_file
+# Download the picture
+curl --connect-timeout 2 -s "$pic_url" > ~/$program_dir/$picture_file
 
-get_pic_success=0
-for path in `cat ~/$program_dir/$bing_pic_url_file`
-do
-	picture_url=${pic_url_prefix}${path}
-
-	# Download the picture     
-	curl --connect-timeout 2 -s $picture_url > ~/$program_dir/$tmp_pic_file
-
-	file_size=`du -k ~/$program_dir/$tmp_pic_file | awk '{print $1}'`
-	if [ "$file_size" -lt "$bing_pic_size_threshold" ]
-	then
-		echo "file_size: $file_size    threshold: $bing_pic_size_threshold"
-		continue
-	else
-		mv ~/$program_dir/$tmp_pic_file ~/$program_dir/$picture_file
-		get_pic_success=1
-		break
-	fi
-done
-
-
-if [ "$get_pic_success" == "0" ]
+if [ $? -ne 0 ]
 then
 	echo "Some error happen, please report this error to <rytubuntulinux@gmail.com>"
 fi
@@ -225,7 +208,5 @@ if [ "$k_option" == "0" ]
 then
 	rm -rf ~/$program_dir/$html_file 
 fi
-
-rm -rf ~/$program_dir/$bing_pic_url_file
 
 notify-send -i /usr/share/icons/leaf.jpg "Congratulations!" "Changed Wallpaper Successfully!"
