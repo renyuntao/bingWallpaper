@@ -1,0 +1,193 @@
+#!/bin/bash
+# Date:
+#	2016-09-23         	
+#
+# Function:        
+#	Download the background picture from Bing, and set      
+#	the picture that download from Bing as the desktop
+#	wallpaper of Ubuntu 14.04      
+#
+# Maintainer:        
+#	Yuntao Ren <rytubuntulinux@gmail.com>           
+#
+# History:
+#   - 2022-09-08 (v2.0)
+#     Use bing api to get picture url
+#     Refer: https://stackoverflow.com/questions/10639914/is-there-a-way-to-get-bings-photo-of-the-day
+
+
+# Check if the network is available
+ping -c 1 www.baidu.com &> /dev/null
+# Network is not available
+if [ "$?" != "0" ]
+then
+	#notify-send -i /usr/share/icons/leaf.jpg "Warning!" "Network is not available"
+	exit 1
+fi
+ 
+# This function used to show help message 
+show_help()
+{
+	
+	clear
+		
+	# Get the width of tty
+	tty_cols=`tput cols`
+
+	# If $tty_cols >= 80
+	if [ $tty_cols -ge 80 ] 
+	then
+		echo -e "\033[1m================================= HELP ===================================\033[0m"
+	else
+		let remainder=$tty_cols%2
+
+		# $tty_cols is a even number
+		if [ "$remainder" == "0" ]
+		then
+			# Because the length of ' HELP ' is 6, so $tty_cols-6
+			let n=($tty_cols-6)/2
+		# $tty_cols is a odd number
+		else
+			let n=($tty_cols-1-6)/2
+		fi
+
+		echo -en "\033[1m"
+		for i in `seq 1 $n`
+		do
+			echo -n "="
+		done
+
+		echo -n " HELP "
+
+		for i in `seq 1 $n`
+		do
+			echo -n "="
+		done
+		echo -e "\033[0m"
+	fi
+
+	# Name
+	echo -e "\033[1mNAME\033[0m\n   bingWallpaper - Set the desktop wallpaper of Ubuntu 14.04\n"
+
+	# Synopsis
+	echo -e "\033[1mSYNOPSIS\n\033[0m   bingWallpaper [ \033[1m-h\033[0m | \033[1m-v\033[0m ]\n"
+
+	# Description
+	echo -e "\033[1mDESCRIPTION\033[0m"         
+	echo -e "   Download the background picture of \033[1mBing\033[0m, then set this picture as the"
+	echo -e "   desktop wallpaper of Ubuntu 14.04\n"
+
+	# Options
+	echo -e "\033[1mOptions\033[0m"
+	echo -e "\033[1m   -h\033[0m\n      Show this help\n"
+	echo -e "\033[1m   -v\033[0m\n      Show version information"
+
+
+	# If $tty_cols >= 80
+	if [ $tty_cols -ge 80 ] 
+	then
+		echo -e "\033[1m==========================================================================\033[0m"
+	else
+		# Because the length of ' HELP ' is 6, so +6
+		let n=n*2+6
+		echo -en "\033[1m"
+		for i in `seq 1 $n`
+		do
+			echo -n "="
+		done
+		echo -e "\033[0m"
+	fi
+}
+
+# Show version information
+show_version()
+{
+	echo "bingWallpaper v2.0"
+}
+
+# if h_option is specified, then show help         
+#
+# if r_option is specified, then the HTML file that download from Bing 
+# will be removed after get the URI of picture from this file    
+#
+# if k_option is specified, then keep the HTML file that download from
+# Bing   
+h_option=0
+r_option=0
+k_option=0
+v_option=0
+
+while getopts ":hrkv" opt
+do
+	case $opt in
+		h)
+			h_option=1
+			;;
+		r)
+			r_option=1
+			;;
+		k)
+			k_option=1
+			;;
+		v)
+			v_option=1
+			;;
+		\?)
+			echo -e "\033[1m\033[31mError:\033[0m Unrecognized option -$OPTARG"
+			echo -e "Use\n"
+			echo -e "    \033[1m$ bingWallpaper -h\033[0m\n"
+			echo "for more information"
+			exit 1
+			;;
+	esac
+done
+
+# -r option can't used with -k option
+if [ "$r_option" == "1" ] && [ "$k_option" == "1" ]
+then
+	echo -e "\033[1m\033[31mError:\033[0m -r option can't used with -k option"
+	exit 1
+fi
+
+# If only -h option is specified
+if [ "$h_option" == "1" ] && [ "$k_option" == "0" ] && [ "$r_option" == "0" ]
+then
+	show_help
+	exit 0
+fi
+
+# if -v option is specified          
+if [ "$v_option" == "1" ] 
+then
+	show_version
+	exit 0
+fi
+
+# ****************************** CORE *********************************
+
+html_file='bing.html'
+picture_file="bing-$(date +'%F').jpg"
+bing_url='https://www.bing.com'
+program_dir=bingWallpaper
+
+if [ ! -d ~/$program_dir ]
+then
+	mkdir ~/$program_dir
+fi
+
+# Get the picture url
+api_url="$bing_url/HPImageArchive.aspx?format=xml&idx=0&n=1&mkt=en-US"
+pic_path=$(curl -s "$api_url" | perl -nlE 'print $1 if /<url>(.*)<\/url>/')
+pic_url="${bing_url}${pic_path}"
+
+# Download the picture
+curl --connect-timeout 2 -s "$pic_url" > ~/$program_dir/$picture_file
+
+if [ $? -ne 0 ]
+then
+	echo "Some error happen, please report this error to <rytubuntulinux@gmail.com>"
+else
+	echo "Save bing wallpaper to ~/$program_dir/$picture_file"
+fi
+
+# **************************** END CORE *******************************
