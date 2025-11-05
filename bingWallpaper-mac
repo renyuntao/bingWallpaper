@@ -70,7 +70,7 @@ show_help()
 	echo -e "\033[1mNAME\033[0m\n   bingWallpaper - Set the desktop wallpaper of Ubuntu 14.04\n"
 
 	# Synopsis
-	echo -e "\033[1mSYNOPSIS\n\033[0m   bingWallpaper [ \033[1m-h\033[0m | \033[1m-v\033[0m ]\n"
+	echo -e "\033[1mSYNOPSIS\n\033[0m   bingWallpaper [ \033[1m-h\033[0m | \033[1m-v\033[0m ] [ MARKET ]\n"
 
 	# Description
 	echo -e "\033[1mDESCRIPTION\033[0m"         
@@ -175,8 +175,18 @@ then
 	mkdir ~/$program_dir
 fi
 
+last_param="${@: -1}"
+if [ "$last_param" == "" ] || [ "$last_param" == "cn" ]
+then
+	mkt="zh-CN"
+else
+	mkt="en-US"
+	picture_file="bing-$(date +'%F')-en.jpg"
+fi
+
 # Get the picture url
-api_url="$bing_url/HPImageArchive.aspx?format=xml&idx=0&n=1&mkt=en-US"
+#api_url="$bing_url/HPImageArchive.aspx?format=xml&idx=0&n=1&mkt=en-US"
+api_url="$bing_url/HPImageArchive.aspx?format=xml&idx=0&n=1&mkt=$mkt"
 pic_path=$(curl -s "$api_url" | perl -nlE 'print $1 if /<url>(.*)<\/url>/')
 pic_url="${bing_url}${pic_path}"
 
